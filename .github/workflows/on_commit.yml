@@ -1,0 +1,28 @@
+name: CI - Push na Main
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x] 
+
+    steps:
+    - name: 1. Checkout do Código (Branch do Push)
+      uses: actions/checkout@v4
+
+    - name: 2. Instalar Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        
+    - name: 3. Instalar Dependências do Projeto
+      run: npm install
+      
+    - name: 4. Executar Testes da Aplicação
+      run: npm test
