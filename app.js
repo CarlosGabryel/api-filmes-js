@@ -35,10 +35,42 @@ app.get('/api/filmes', (req, res) => {
     return res.status(200).json({ filmes: filmes });
 });
 
+// =======================================================
+// FEATURE 2: Rota POST para adicionar um novo filme
+// =======================================================
+app.post('/api/filmes', (req, res) => {
+    /** Cria um novo filme a partir dos dados JSON recebidos. */
+    const { titulo, ano, diretor } = req.body;
+
+    // 1. Validação
+    if (!titulo || !ano || !diretor) {
+        return res.status(400).json({
+            erro: 'Campos obrigatórios (titulo, ano, diretor) estão faltando.'
+        });
+    }
+
+    // 2. Cria o novo filme
+    const novoFilme = {
+        id: proximoId,
+        titulo: titulo,
+        ano: ano,
+        diretor: diretor
+    };
+
+    // 3. Adiciona à lista
+    filmes.push(novoFilme);
+
+    // 4. Incrementa o próximo ID
+    proximoId++;
+
+    // 5. Retorna o filme criado com o status 201 (Created)
+    return res.status(201).json(novoFilme);
+});
 
 // Inicializa o servidor Express
 app.listen(port, () => {
     console.log(`API de Filmes rodando em http://localhost:${port}/`);
     console.log(`Endpoints disponíveis:`);
     console.log(` - GET  http://localhost:${port}/api/filmes`);
+    console.log(` - POST http://localhost:${port}/api/filmes`);
 });
