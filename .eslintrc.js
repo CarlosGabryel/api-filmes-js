@@ -14,6 +14,6 @@ module.exports = {
   rules: {
     'no-console': 'off',
     'consistent-return': 'off',
-    'no-unused-vars': 'warn'
+    'no-unused-vars': 'warn',
   },
 };
