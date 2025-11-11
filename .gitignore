@@ -1,0 +1,9 @@
+# Arquivos de Dependências
+/node_modules
+
+# Arquivos de Build/Log
+npm-debug.log*
+.DS_Store
+
+# Artefatos do Jest
+/coverage
