@@ -1,58 +1,59 @@
 const request = require('supertest');
 const app = require('../src/app');
-const {resetaFilmes} = require('../src/models/filmesModel');
+const { resetaFilmes } = require('../src/models/filmesModel');
 
 let servidor;
 
-//sobe o servidor uma única vez:
+// sobe o servidor uma única vez:
 beforeAll((done) => {
-    servidor = app.listen(0, done)})
+  servidor = app.listen(0, done);
+});
 
-//fecha o servidor após todos os testes:
+// fecha o servidor após todos os testes:
 afterAll((done) => {
-    servidor.close(done);
+  servidor.close(done);
 });
 
-//reseta o "banco de dados" antes de cada teste
+// reseta o "banco de dados" antes de cada teste
 beforeEach(() => {
-    resetaFilmes();
+  resetaFilmes();
 });
 
-//Test do GET
+// Test do GET
 describe('GET /api/filmes', () => {
-    test('Deve retornar a lista completa de filmes com status 200', async () => {
-        const resposta = await request(servidor).get('/api/filmes');
-        expect(resposta.status).toBe(200);
-        expect(Array.isArray(resposta.body.filmes)).toBe(true);
-    });
+  test('Deve retornar a lista completa de filmes com status 200', async () => {
+    const resposta = await request(servidor).get('/api/filmes');
+    expect(resposta.status).toBe(200);
+    expect(Array.isArray(resposta.body.filmes)).toBe(true);
+  });
 });
 
-//Test do POST
-describe('POST /api/filmes', ()=>{
-    test('Deve criar um novo filme (201)', async ()=>{
-        const novoFilme = {
-            titulo: "Até o último homem",
-            ano: 2016,
-            diretor: "Mel Gibson",
-        }
-        const resposta = await request(app)
-        .post('/api/filmes')
-        .send(novoFilme);
+// Test do POST
+describe('POST /api/filmes', () => {
+  test('Deve criar um novo filme (201)', async () => {
+    const novoFilme = {
+      titulo: 'Até o último homem',
+      ano: 2016,
+      diretor: 'Mel Gibson',
+    };
+    const resposta = await request(app)
+      .post('/api/filmes')
+      .send(novoFilme);
 
     expect(resposta.statusCode).toBe(201);
     expect(resposta.body.titulo).toBe(novoFilme.titulo);
-    });
+  });
 
-    test('Deve retornar erro 400 caso falte algum campo obrigatório (Para testar apague algum campo do filme de teste criado "novoFilme")', async () => {
+  test('Deve retornar erro 400 caso falte algum campo obrigatório (Para testar apague algum campo do filme de teste criado "novoFilme")', async () => {
     const resposta = await request(app)
       .post('/api/filmes')
       .send({ titulo: 'Filme Incompleto' });
 
     expect(resposta.statusCode).toBe(400);
   });
-})
+});
 
-//Test DELETE
+// Test DELETE
 
 describe('DELETE /api/filmes/:id', () => {
   const filmeParaDeletarId = 3; // ID do filme do Batman: O Cavaleiro das Trevas
