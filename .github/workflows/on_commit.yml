@@ -66,14 +66,22 @@ jobs:
     
     - name: 3. Build da imagem Docker
       run: |
+        ls -l
+        cat Dockerfile
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/api-filmes-js:latest .
+    
+    - name: Debug secret username
+      run: echo "Docker Hub Username is ${{ secrets.DOCKERHUB_USERNAME }}"
+
+    - name: Verificar imagens construídas
+      run: docker images
 
     - name: Salvar imagem Docker como artefato
       uses: actions/upload-artifact@v4
       with:
         name: docker-image
         path: .
-
+   
   # Job 4: Push da Imagem Docker
   docker_push:
     runs-on: ubuntu-latest
