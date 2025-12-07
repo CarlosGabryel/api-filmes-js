@@ -2,9 +2,9 @@
   "name": "api-filmes-js",
   "version": "1.0.0",
   "description": "API REST de Filmes com Node.js e Express",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node src/app.js",
     "test": "jest --coverage",
     "lint": "eslint ."
   },
@@ -20,10 +20,10 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "app.js"
+      "./src/app.js"
     ],
     "coverageThreshold": {
-      "./app.js": {
+      "./src/app.js": {
         "branches": 90,
         "functions": 90,
         "lines": 90,
