@@ -1,0 +1,65 @@
+- name: Configurar o servidor e instalar API de filmes com Docker
+  hosts: api
+  become: yes
+
+  vars:
+    dockerhub_user: "carlosgbc21"
+    image_name: "api-filmes-js"
+    container_name: "api-filmes"
+    app_port: 8080
+
+  tasks:
+    - name: Atualizar o sistema
+      apt:
+        update_cache: yes
+    
+    - name: Instalar dependências Docker
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Adicionar chave GPG do Docker
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Instalar Docker
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+      
+    - name: Garantir que o serviço Docker está em execução
+      service:
+        name: docker
+        state: started
+        enabled: yes
+    
+    - name: Remover container antigo, se existir
+      docker_container:
+        name: "{{ container_name }}"
+        state: absent
+        force_kill: yes
+
+    - name: Baixar imagem mais recente da API
+      docker_image:
+        name: "{{ dockerhub_user }}/{{ image_name }}"
+        tag: latest
+        source: pull
+    
+    - name: Subir container da API de filmes
+      docker_container:
+        name: "{{ container_name }}"
+        image: "{{ dockerhub_user }}/{{ image_name }}:latest"
+        state: started
+        restart_policy: always
+        ports:
+          - "{{ app_port }}:8080"
+    
+    - name: Exibir status do container
+      debug:
+        msg: "API de filmes instalada com sucesso! Acesse em http://{{ inventory_hostname }}:{{ app_port }}"
